@@ -63,21 +63,21 @@ class LoginView(View):
             width=170,
             height=40,
             on_click=self._on_login_click,
+            disabled=True
         )
 
     def build_ui(self):
-       
-        content=ft.Column(
-                controls=[
-                    self.message_error,  # Asegúrate de mantenerlo en la misma posición
-                    self.logo_icon,
-                    self._build_input_section(),
-                    self._build_submit_section(),
-                ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=10,
-            )
-           
+        content = ft.Column(
+            controls=[
+                self.message_error,  # Asegúrate de mantenerlo en la misma posición
+                self.logo_icon,
+                self._build_input_section(),
+                self._build_submit_section(),
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=10,
+        )
+
         return content
 
     def _build_input_section(self):

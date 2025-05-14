@@ -1,10 +1,10 @@
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, field
 from typing import Optional, List
 
 
 @dataclass
 class AppStatus:
-    is_connected: bool = True
+    is_connected: bool = False
     is_login: bool = True
 
 

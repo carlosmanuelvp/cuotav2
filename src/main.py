@@ -3,8 +3,11 @@ from frontend.view_controller import frontendController
 
 
 def main(page: ft.Page):
-    page.title = "Cuota-UCI"
+    
     page.theme_mode = ft.ThemeMode.LIGHT
+    page.window.height=650
+    page.window.width=450
+    page.window.title_bar_hidden=True
 
     frontendController(page)
 

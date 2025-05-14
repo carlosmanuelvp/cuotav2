@@ -1,7 +1,7 @@
 import flet as ft
 
 
-class CustomContainer(ft.Container):
+class   CustomContainer(ft.Container):
     def __init__(
         self,
         content,

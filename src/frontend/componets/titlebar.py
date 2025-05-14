@@ -37,7 +37,7 @@ def create_titlebar(
                 ft.WindowDragArea(
                     ft.Container(
                         content=ft.Text(
-                            "Cuota UCI",
+                            "",
                             text_align=ft.TextAlign.CENTER,
                             weight=ft.FontWeight.BOLD,
                             color=ft.Colors.WHITE,
