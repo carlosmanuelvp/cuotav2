@@ -18,13 +18,13 @@ class frontendController:
         self.page.window.title_bar_hidden = True
         self.page.window.title_bar_buttons_hidden = True
         self.page.window.frameless = False
-        self.page.bgcolor = ft.Colors.BROWN_50
+        self.page.bgcolor = ft.Colors.BLUE_GREY_50
 
         self._build_ui()
 
     def _build_ui(self):
         # Instanciar vistas
-        self.login_view = LoginView(self.page)
+        self.login_view = LoginView(self.page, self)
         self.dashboard_view = DashboardView(self.page)
         self.settings_view = SettingsView(self.page)
 
@@ -36,14 +36,14 @@ class frontendController:
             content=self.settings_view.build_ui(), visible=False
         )
         self.dashboard_container = CustomControllerBasePage(
-            self.dashboard_view.build_ui(), visible=True
+            self.dashboard_view.build_ui(), visible=False
         )
 
         # Apilar vistas
         self.stack = ft.Stack(
             [
                 self.login_container,
-                #self.dashboard_container,
+                self.dashboard_container,
                 self.settings_container,
             ]
         )

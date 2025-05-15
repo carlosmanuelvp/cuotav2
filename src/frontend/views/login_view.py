@@ -5,35 +5,40 @@ from frontend.componets.elebate_button import CustomElevatedButton
 from frontend.componets.checkbox import CustomCheckbox
 from frontend.componets.container_page import CustomControllerBasePage
 from .base_view import View
+import asyncio
+from frontend.componets.message_manager import MessageManager
 
 
 class LoginView(View):
-    def __init__(self, page: ft.Page):
-        self.page = page
-        self._init_ui_components()
 
+    
+    def __init__(self, page: ft.Page,controller):
+        self.page = page
+        self.controller = controller
+        self._init_ui_components()
+        self.message_manager = MessageManager(self.message_error, self.page) 
+    
     def _init_ui_components(self):
         self.message_error = CustomContainer(
-            content=ft.Text(
-                "Error message",
-            ),
+            content=ft.Row(controls=[]),  # Aquí un contenedor vacío con controls
             bgcolor=ft.Colors.RED_300,
             border_radius=10,
             width=300,
             height=50,
             opacity=0,
         )
+
         self.logo_icon = ft.Image(
-            src="src/assets/icon.png",
-            width=170,
-            height=170,
+            src="src/assets/logo.webp",
+            width=190,
+            height=190,
             fit=ft.ImageFit.CONTAIN,
         )
         self.username_field = CustomTextField(
             label="Usuario",
             hint_text="Escribe el nombre de usuario",
             prefix_icon=ft.Icons.PERSON,
-            # on_blur=self._on_usernmae_blur,
+            on_change=self._validate_fields,
             disabled=False,
         )
         self.password_field = CustomTextField(
@@ -42,10 +47,12 @@ class LoginView(View):
             hint_text="escribe la contrasena",
             prefix_icon=ft.Icons.LOCK,
             can_reveal_password=True,
+            on_change=self._validate_fields,
             # on_blur=self._on_password_blur,
             disabled=False,
         )
-        self.save_checkbox = CustomCheckbox(label="Guardar contraseña")
+
+        self.save_checkbox = CustomCheckbox(label="Mantener Sesion Iniciada")
         self.login_button = CustomElevatedButton(
             content=ft.Row(
                 [
@@ -57,13 +64,17 @@ class LoginView(View):
             ),
             style=ft.ButtonStyle(
                 shape=ft.RoundedRectangleBorder(radius=10),
-                color=ft.Colors.WHITE,
+                color=ft.Colors.WHITE   ,
+                overlay_color=ft.Colors.BLUE_400,
+                shadow_color=ft.Colors.BLUE_500,
+                
+                
                 bgcolor=ft.Colors.BLUE_500,
             ),
             width=170,
             height=40,
             on_click=self._on_login_click,
-            disabled=True
+            disabled=True,
         )
 
     def build_ui(self):
@@ -105,6 +116,13 @@ class LoginView(View):
         ft.alignment.bottom_center
         return CustomContainer(content=self.login_button, alignment=ft.alignment.center)
 
-    def _on_login_click(self, e):
-        self.message_error.opacity = 1.0
+    async def _on_login_click(self, e):
+        self.controller.show_dashboard()
+        
+    def _validate_fields(self, e):
+        username = self.username_field.value.strip()
+        password = self.password_field.value.strip()
+
+        # Habilita el botón solo si ambos campos tienen texto
+        self.login_button.disabled = not (username and password)
         self.page.update()

@@ -24,6 +24,7 @@ class CustomTextField(ft.TextField):
         validation_func=None,
         error_text=None,
         text_size=None,
+        on_change=None,
     ):
         super().__init__()
         # eventos
@@ -58,6 +59,7 @@ class CustomTextField(ft.TextField):
         self.focused_color = ft.Colors.BLACK54
         self.text_size = 14
         self.can_reveal_password = can_reveal_password
+        self.on_change = on_change
 
     def _on_blur_handler(self, e):
         if self._validation_func:

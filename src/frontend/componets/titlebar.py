@@ -26,8 +26,8 @@ def create_titlebar(
                             # on_click=lambda _: ,  # Usamos el callback
                         ),
                         ft.PopupMenuItem(
-                            text="Opción 3",
-                            on_click=lambda _: controller.show_settings()
+                            text="Salir",
+                            on_click=lambda _: controller.show_login()
                             if controller
                             else None,
                         ),

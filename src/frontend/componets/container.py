@@ -1,7 +1,7 @@
 import flet as ft
 
 
-class   CustomContainer(ft.Container):
+class CustomContainer(ft.Container):
     def __init__(
         self,
         content,
@@ -17,6 +17,7 @@ class   CustomContainer(ft.Container):
         expand=False,
         alignment=None,
         opacity=None,
+        animate_opacity=None,
     ):
         super().__init__()
 
@@ -34,3 +35,4 @@ class   CustomContainer(ft.Container):
         self.expand = False
         self.visible = visible
         self.opacity = opacity
+        self.animate_opacity = animate_opacity

@@ -1,5 +1,6 @@
 import flet as ft
 
+
 def main(page: ft.Page):
     page.title = "NavigationBar con Validación por Vista"
     page.padding = 0
@@ -9,7 +10,7 @@ def main(page: ft.Page):
     snackbar = ft.SnackBar(
         content=ft.Text(""),
         bgcolor=ft.Colors.RED_500,
-        duration=4000  # 4 segundos
+        duration=4000,  # 4 segundos
     )
     page.snack_bar = snackbar
 
@@ -31,21 +32,25 @@ def main(page: ft.Page):
         else:
             mostrar_snackbar("Formulario guardado correctamente.", ft.Colors.GREEN_400)
 
-    btn_guardar_1 = ft.FloatingActionButton(icon=ft.icons.SAVE, on_click=guardar_vista_1)
+    btn_guardar_1 = ft.FloatingActionButton(
+        icon=ft.icons.SAVE, on_click=guardar_vista_1
+    )
 
-    vista_1 = ft.Stack([
-        ft.Container(
-            content=ft.Column([nombre, apellido, correo, telefono]),
-            alignment=ft.alignment.center,
-            expand=True,
-            bgcolor=ft.Colors.BLUE_100,
-        ),
-        ft.Container(
-            content=btn_guardar_1,
-            alignment=ft.alignment.bottom_right,
-            padding=20,
-        )
-    ])
+    vista_1 = ft.Stack(
+        [
+            ft.Container(
+                content=ft.Column([nombre, apellido, correo, telefono]),
+                alignment=ft.alignment.center,
+                expand=True,
+                bgcolor=ft.Colors.BLUE_100,
+            ),
+            ft.Container(
+                content=btn_guardar_1,
+                alignment=ft.alignment.bottom_right,
+                padding=20,
+            ),
+        ]
+    )
 
     # ----------- VISTA 2 ------------
     checkboxes = [ft.Checkbox(label=f"Opción {chr(65 + i)}") for i in range(5)]
@@ -56,21 +61,25 @@ def main(page: ft.Page):
         else:
             mostrar_snackbar("Opciones guardadas correctamente.", ft.Colors.GREEN_400)
 
-    btn_guardar_2 = ft.FloatingActionButton(icon=ft.icons.SAVE_AS, on_click=guardar_vista_2)
+    btn_guardar_2 = ft.FloatingActionButton(
+        icon=ft.icons.SAVE_AS, on_click=guardar_vista_2
+    )
 
-    vista_2 = ft.Stack([
-        ft.Container(
-            content=ft.Column(checkboxes),
-            alignment=ft.alignment.center,
-            expand=True,
-            bgcolor=ft.Colors.GREEN_100,
-        ),
-        ft.Container(
-            content=btn_guardar_2,
-            alignment=ft.alignment.bottom_right,
-            padding=20,
-        )
-    ])
+    vista_2 = ft.Stack(
+        [
+            ft.Container(
+                content=ft.Column(checkboxes),
+                alignment=ft.alignment.center,
+                expand=True,
+                bgcolor=ft.Colors.GREEN_100,
+            ),
+            ft.Container(
+                content=btn_guardar_2,
+                alignment=ft.alignment.bottom_right,
+                padding=20,
+            ),
+        ]
+    )
 
     # ----------- VISTA 3 ------------
     usuario = ft.TextField(label="Usuario")
@@ -82,21 +91,25 @@ def main(page: ft.Page):
         else:
             mostrar_snackbar("Inicio de sesión guardado.", ft.Colors.GREEN_400)
 
-    btn_guardar_3 = ft.FloatingActionButton(icon=ft.icons.CLOUD_UPLOAD, on_click=guardar_vista_3)
+    btn_guardar_3 = ft.FloatingActionButton(
+        icon=ft.icons.CLOUD_UPLOAD, on_click=guardar_vista_3
+    )
 
-    vista_3 = ft.Stack([
-        ft.Container(
-            content=ft.Column([usuario, contraseña]),
-            alignment=ft.alignment.center,
-            expand=True,
-            bgcolor=ft.Colors.AMBER_100,
-        ),
-        ft.Container(
-            content=btn_guardar_3,
-            alignment=ft.alignment.bottom_right,
-            padding=20,
-        )
-    ])
+    vista_3 = ft.Stack(
+        [
+            ft.Container(
+                content=ft.Column([usuario, contraseña]),
+                alignment=ft.alignment.center,
+                expand=True,
+                bgcolor=ft.Colors.AMBER_100,
+            ),
+            ft.Container(
+                content=btn_guardar_3,
+                alignment=ft.alignment.bottom_right,
+                padding=20,
+            ),
+        ]
+    )
 
     # ----------- CONTENEDOR Y NAVEGACIÓN ------------
     content_container = ft.Container(content=vista_1, expand=True)
@@ -123,5 +136,6 @@ def main(page: ft.Page):
 
     page.navigation_bar = nav_bar
     page.add(content_container)
+
 
 ft.app(main)
