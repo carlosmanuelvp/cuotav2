@@ -5,6 +5,7 @@ import flet as ft
 class View(ABC):
     def __init__(self, page, controller):
         self.page = page
+        self.page.padding = 0
         self.controller = controller
 
     @abstractmethod

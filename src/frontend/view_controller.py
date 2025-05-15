@@ -2,6 +2,7 @@ import flet as ft
 from frontend.views.login_view import LoginView
 from frontend.views.dashboard_view import DashboardView
 from frontend.views.settings_view import SettingsView
+from frontend.views.chage_password import ChangePasswordView
 from frontend.componets.titlebar import create_titlebar
 from frontend.componets.container_page import CustomControllerBasePage
 
@@ -27,10 +28,10 @@ class frontendController:
         self.login_view = LoginView(self.page, self)
         self.dashboard_view = DashboardView(self.page)
         self.settings_view = SettingsView(self.page)
-
+        self.change_password= ChangePasswordView(self.page)
         # Contenedores de vistas
         self.login_container = CustomControllerBasePage(
-            self.login_view.build_ui(), visible=True
+            self.login_view.build_ui(), visible=False, padding=0, margin=0
         )
         self.settings_container = CustomControllerBasePage(
             content=self.settings_view.build_ui(), visible=False, padding=0, margin=0
@@ -38,13 +39,16 @@ class frontendController:
         self.dashboard_container = CustomControllerBasePage(
             self.dashboard_view.build_ui(), visible=False, padding=0
         )
-
+        self.change_password_container= CustomControllerBasePage(
+            content=self.change_password.build_ui(), visible=True, padding=0, margin=0
+        )
         # Apilar vistas
         self.stack = ft.Stack(
             [
                 self.login_container,
                 self.dashboard_container,
                 self.settings_container,
+                self.change_password_container
             ],
         
         )
