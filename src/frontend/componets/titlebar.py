@@ -26,7 +26,13 @@ def create_titlebar(
                             # on_click=lambda _: ,  # Usamos el callback
                         ),
                         ft.PopupMenuItem(
-                            text="Salir",
+                            content=ft.Row(
+                                controls=[
+                                    ft.Icon(ft.icons.POWER_SETTINGS_NEW, color=ft.Colors.BLUE_GREY_50), # Icono de salir
+                                    ft.Text("Salir", color=ft.Colors.BLUE_GREY_50, size=14), # Texto de salir
+                                ],
+                                spacing=10 # Espacio entre el icono y el texto
+                            ),
                             on_click=lambda _: controller.show_login()
                             if controller
                             else None,

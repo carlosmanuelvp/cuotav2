@@ -12,13 +12,13 @@ class frontendController:
         self.page.padding = 0
         self.page.window.width = 330
         self.page.window.height = 595
-        self.page.padding = 0
+        
         self.title_bar_buttons_hidden = True
         self.title_bar_hidden = True
         self.page.window.title_bar_hidden = True
         self.page.window.title_bar_buttons_hidden = True
         self.page.window.frameless = False
-        self.page.bgcolor = ft.Colors.BLUE_GREY_50
+        self.page.bgcolor = ft.Colors.RED_50
 
         self._build_ui()
 
@@ -33,10 +33,10 @@ class frontendController:
             self.login_view.build_ui(), visible=True
         )
         self.settings_container = CustomControllerBasePage(
-            content=self.settings_view.build_ui(), visible=False
+            content=self.settings_view.build_ui(), visible=False, padding=0, margin=0
         )
         self.dashboard_container = CustomControllerBasePage(
-            self.dashboard_view.build_ui(), visible=False
+            self.dashboard_view.build_ui(), visible=False, padding=0
         )
 
         # Apilar vistas
@@ -45,13 +45,15 @@ class frontendController:
                 self.login_container,
                 self.dashboard_container,
                 self.settings_container,
-            ]
+            ],
+        
         )
 
         # Añadir barra de título y stack a la página
         self.page.add(
             create_titlebar(self.page, self),
             self.stack,
+            
         )
 
     def show_dashboard(self):

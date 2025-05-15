@@ -118,6 +118,7 @@ class LoginView(View):
 
     async def _on_login_click(self, e):
         self.controller.show_dashboard()
+        #self.message_manager.show_message("login_error")
         
     def _validate_fields(self, e):
         username = self.username_field.value.strip()

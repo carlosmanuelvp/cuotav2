@@ -1,26 +1,23 @@
 import flet as ft
 from frontend.componets.container import CustomContainer
 from .base_view import View
-from frontend.componets.container_page import CustomControllerBasePage
+from frontend.componets.message_manager import MessageManager
 from backend.models import AppStatus
-from frontend.views.login_view import LoginView
-
+import psutil
+import asyncio
 
 class DashboardView(View):
     def __init__(self, page: ft.Page):
         self.page = page
         
         self._init_ui_components()
-
+        self.message_manager = MessageManager(self.message_error_dashboard, self.page)
+        asyncio.create_task(self.monitor_network_speed())  # <-- Añade esta línea
     def _init_ui_components(self):
         self.message = " d"
-        self.message_alert_container = CustomContainer(
-            content=ft.Text(
-                self.message,
-                size=20,
-                weight=ft.FontWeight.BOLD,
-                color=ft.Colors.WHITE,
-            ),
+        self.stats_icon=ft.Icon(name=ft.Icons.CIRCLE, color=None, size=20)
+        self.message_error_dashboard = CustomContainer(
+            content=ft.Row(controls=[]),  # Aquí un contenedor vacío con controls
             bgcolor=ft.Colors.RED_300,
             border_radius=10,
             width=300,
@@ -47,8 +44,8 @@ class DashboardView(View):
             color=ft.Colors.BLACK45,
         )
         self.play_button = ft.IconButton(
-            icon=ft.icons.PLAY_CIRCLE_FILLED,
-            icon_color=ft.colors.BLUE_500,
+            icon=ft.Icons.PLAY_CIRCLE_FILLED,
+            icon_color=ft.Colors.BLUE_500,
             icon_size=50,
             tooltip="Iniciar monitoreo",
             on_click=self._toggle_play_state,
@@ -62,17 +59,29 @@ class DashboardView(View):
     def build_ui(self):
         content = ft.Column(
             controls=[
-                self.message_alert_container,  # Asegúrate de mantenerlo en la misma posición
+                ft.Row(
+                    controls=[self._build_icon_connect()],
+                    alignment=ft.MainAxisAlignment.END,  # Esto lo alinea a la derecha
+                ),
+               self.message_error_dashboard,
                 self._build_progress_section(),
                 self._build_speed_section(),
                 self.play_button,
             ],
-            # alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=10,
+            
         )
         return content
-
+    def _build_icon_connect(self):  
+        return CustomContainer(
+            content=self.stats_icon,
+            padding=0,
+            bgcolor=ft.Colors.RED_300,
+            margin=0,
+        )
+        
+    
     def _build_progress_section(self):
         return CustomContainer(
             content=ft.Stack(
@@ -104,19 +113,21 @@ class DashboardView(View):
             padding=6,
             alignment=ft.alignment.center,
         )
+    async def monitor_network_speed(self):
+        old_bytes = psutil.net_io_counters().bytes_recv
+        while True:
+            await asyncio.sleep(1)
+            new_bytes = psutil.net_io_counters().bytes_recv
+            speed_mb = (new_bytes - old_bytes) / (1024 * 1024)  # MB/s
+            speed_kb = (new_bytes - old_bytes) / 1024           # KB/s
+            old_bytes = new_bytes
 
-    def _toggle_play_state(self, e):
-        if self._is_playing:
-            self.play_button.icon = ft.icons.PLAY_CIRCLE_FILLED
-            self.play_button.tooltip = "Detener monitoreo"
-            self.message_alert_container.opacity = 0
-            self.message = "Proxy iniciado correctamente"
+            if speed_mb >= 1:
+                self.nenwork_speed.value = f"{speed_mb:.2f} MB/s"
+            else:
+                self.nenwork_speed.value = f"{speed_kb:.0f} KB/s"
+            self.nenwork_speed.update()
+    async def _toggle_play_state(self, e):
+        self.message_manager.show_message("proxy_stopped")
 
-        else:
-            self.play_button.icon = ft.icons.PLAY_CIRCLE_FILLED
-            self.play_button.tooltip = "Iniciar monitoreo"
-            self.message_alert_container.opacity = 1
-            self.message = "Proxy detenido "
-
-        self.play_button.update()
-        self.page.update()
+        

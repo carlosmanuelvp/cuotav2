@@ -11,18 +11,29 @@ class MessageManager:
         messages = {
             "login_error": {
                 "text": "Usuario o contraseña incorrectos",
-                "icon": ft.icons.ERROR_OUTLINE,
-                "bgcolor": ft.colors.RED_600,
+                "icon": ft.Icons.ERROR_OUTLINE,
+                "bgcolor": ft.Colors.RED_600,
             },
             "network_error": {
                 "text": "No esta conectado a la red UCI",
-                "icon": ft.icons.WIFI_OFF,
-                "bgcolor": ft.colors.ORANGE_700,
+                "icon": ft.Icons.WIFI_OFF,
+                "bgcolor": ft.Colors.ORANGE_700,
             },
             "success": {
                 "text": "¡Inicio de sesión exitoso!",
-                "icon": ft.icons.CHECK_CIRCLE,
-                "bgcolor": ft.colors.GREEN_600,
+                "icon": ft.Icons.CHECK_CIRCLE,
+                "bgcolor": ft.Colors.GREEN_600,
+            },
+            "proxy_success": {
+                "text": "Proxy Iniciado correctamente!",
+                "icon": ft.Icons.CHECK_CIRCLE,
+                "bgcolor": ft.Colors.GREEN_600,
+            },
+            #creme el de proxy deteniedose
+            "proxy_stopped": {
+                "text": "Proxy detenido correctamente!",
+                "icon": ft.Icons.STOP_SHARP,
+                "bgcolor": ft.Colors.GREEN_600,
             },
         }
 
@@ -33,8 +44,8 @@ class MessageManager:
         self.container.content.controls.append(
             ft.Row(
                 controls=[
-                    ft.Icon(name=msg["icon"], color=ft.colors.WHITE, size=20),
-                    ft.Text(msg["text"], color=ft.colors.WHITE, size=14),
+                    ft.Icon(name=msg["icon"], color=ft.Colors.WHITE, size=20),
+                    ft.Text(msg["text"], color=ft.Colors.WHITE, size=14),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
