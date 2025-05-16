@@ -5,13 +5,13 @@ from typing import Optional, List
 @dataclass
 class AppStatus:
     is_connected: bool = False
-    is_login: bool = True
+    is_login: bool = False
 
 
 @dataclass
 class User:
-    username: Optional[str] = None
-    password: Optional[str] = None
+    username: Optional[str] = "carlosmvp"
+    password: Optional[str] = "sadfasdhfuyagsd~s"
 
 
 @dataclass
@@ -39,5 +39,5 @@ class Cuota:
     
 @dataclass
 class configuracion_aviso_cuota:
-    por_minuto=  Optional[float] = None
-    porcito= Optional[float] = None
+    por_minuto: Optional[float] = None
+    por_ciento: Optional[float] = None

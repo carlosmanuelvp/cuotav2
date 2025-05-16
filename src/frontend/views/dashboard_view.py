@@ -2,15 +2,17 @@ import flet as ft
 from frontend.componets.container import CustomContainer
 from .base_view import View
 from frontend.componets.message_manager import MessageManager
-from backend.models import AppStatus
-import psutil
+from backend.state import app_data , user_data
+from backend.account_validation import validate_account, validate_red
+
 import asyncio
+import psutil
 
 
 class DashboardView(View):
-    def __init__(self, page: ft.Page):
+    def __init__(self, page: ft.Page, controller):
         self.page = page
-
+        self.controller = controller
         self._init_ui_components()
         self.message_manager = MessageManager(self.message_error_dashboard, self.page)
         asyncio.create_task(self.monitor_network_speed())  # <-- Añade esta línea
@@ -131,4 +133,26 @@ class DashboardView(View):
             self.nenwork_speed.update()
 
     async def _toggle_play_state(self, e):
-        self.message_manager.show_message("proxy_stopped")
+        if validate_red():
+            if validate_account(user_data.username, user_data.password):    
+                if not app_data.is_connected:
+                    app_data.is_connected = True
+                    self.play_button.icon = ft.Icons.STOP_CIRCLE
+                    self.play_button.tooltip = "Detener monitoreo"
+                    self.play_button.icon_color = ft.Colors.RED_500
+                    self.message_manager.show_message("proxy_success")
+                else:
+                    app_data.is_connected = False
+                    self.play_button.icon = ft.Icons.PLAY_CIRCLE_FILLED
+                    self.play_button.tooltip = "Iniciar monitoreo"
+                    self.play_button.icon_color = ft.Colors.BLUE_500
+                    self.message_manager.show_message("proxy_stopped")
+                
+            else:
+                app_data.is_login = False
+                self.controller.show_login()
+        else:
+            self.message_manager.show_message("network_error")
+        
+            
+        self.page.update()

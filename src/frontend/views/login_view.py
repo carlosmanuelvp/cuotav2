@@ -7,15 +7,18 @@ from frontend.componets.container_page import CustomControllerBasePage
 from .base_view import View
 import asyncio
 from frontend.componets.message_manager import MessageManager
-
-
+#validaciones
+from backend.account_validation import  validate_account , validate_red
+from backend.state import app_data 
 class LoginView(View):
-    def __init__(self, page: ft.Page, controller):
+
+    
+    def __init__(self, page: ft.Page,controller):
         self.page = page
         self.controller = controller
         self._init_ui_components()
-        self.message_manager = MessageManager(self.message_error, self.page)
-
+        self.message_manager = MessageManager(self.message_error, self.page) 
+    
     def _init_ui_components(self):
         self.message_error = CustomContainer(
             content=ft.Row(controls=[]),  # Aquí un contenedor vacío con controls
@@ -62,9 +65,11 @@ class LoginView(View):
             ),
             style=ft.ButtonStyle(
                 shape=ft.RoundedRectangleBorder(radius=10),
-                color=ft.Colors.WHITE,
+                color=ft.Colors.WHITE   ,
                 overlay_color=ft.Colors.BLUE_400,
                 shadow_color=ft.Colors.BLUE_500,
+                
+                
                 bgcolor=ft.Colors.BLUE_500,
             ),
             width=170,
@@ -113,13 +118,21 @@ class LoginView(View):
         return CustomContainer(content=self.login_button, alignment=ft.alignment.center)
 
     async def _on_login_click(self, e):
-        self.controller.show_dashboard()
-        # self.message_manager.show_message("login_error")
-
+        if validate_red():
+            if validate_account(self.username_field.value, self.password_field.value):
+                app_data.is_login=True
+                self.controller.show_dashboard()
+            else:
+                self.message_manager.show_message("login_error")
+                
+        else:
+            self.message_manager.show_message("network_error")
+         
     def _validate_fields(self, e):
         username = self.username_field.value.strip()
         password = self.password_field.value.strip()
-
+        
+        
         # Habilita el botón solo si ambos campos tienen texto
         self.login_button.disabled = not (username and password)
         self.page.update()

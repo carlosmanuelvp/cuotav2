@@ -1,56 +1,78 @@
 import flet as ft
+from backend.state import app_data
 
-
-def create_titlebar(
-    page: ft.Page, controller=None
-):  # Añadimos un argumento para el callback
+def create_titlebar(page: ft.Page, controller=None):
+    """
+    Crea una barra de título personalizada con un menú que se muestra 
+    en todas las vistas excepto la de login.
+    """
+    # Vista actual (por defecto, login)
+    current_view = "login"
+    
+    # Función para cambiar la vista actual
+    def set_current_view(view_name):
+        nonlocal current_view
+        current_view = view_name
+        update_titlebar()
+        page.update()
+    
+    # Función para actualizar la barra de título
+    def update_titlebar():
+        # Mostrar menú si no es login Y el usuario está logueado
+        show_menu = current_view != "login" and app_data.is_login and controller is not None
+        
+        # Actualizar visibilidad del menú
+        menu_button.visible = show_menu
+    
+    # Función para cerrar sesión
+    def logout_user():
+        app_data.is_login = False
+        if controller:
+            controller.show_login()
+    
+    # Crear botón de menú (inicialmente puede estar oculto)
+    menu_button = ft.PopupMenuButton(
+        icon=ft.Icons.MENU,
+        icon_color=ft.Colors.WHITE,
+        icon_size=20,
+        bgcolor=ft.Colors.INDIGO_500,
+        tooltip="Opciones",
+        visible=False,  # Inicialmente oculto
+        items=[
+            ft.PopupMenuItem(
+                text="Dashboard",
+                on_click=lambda _: controller.show_dashboard() if controller else None,
+            ),
+            ft.PopupMenuItem(
+                text="Ajustes",
+                on_click=lambda _: controller.show_settings() if controller else None,
+            ),
+            ft.PopupMenuItem(
+                text="Cambiar Contraseña",
+                on_click=lambda _: controller.show_change_password() if controller else None,
+            ),
+            ft.PopupMenuItem(
+                content=ft.Row(
+                    controls=[
+                        ft.Icon(ft.icons.POWER_SETTINGS_NEW, color=ft.Colors.BLUE_GREY_50),
+                        ft.Text("Cerrar Sesión", color=ft.Colors.BLUE_GREY_50, size=14),
+                    ],
+                    spacing=10,
+                ),
+                on_click=lambda _: logout_user(),
+            ),
+        ],
+    )
+    
+    # Crear la barra de título
     titlebar = ft.Container(
         content=ft.Row(
             [
-                # Botón de menú de 3 puntos
-                ft.PopupMenuButton(
-                    icon=ft.Icons.MENU,
-                    icon_color=ft.Colors.WHITE,
-                    icon_size=20,
-                    bgcolor=ft.Colors.INDIGO_500,
-                    tooltip="Opciones",
-                    items=[
-                        ft.PopupMenuItem(
-                            text="Ajustes",
-                            on_click=lambda _: controller.show_settings()
-                            if controller
-                            else None,  # Añadido el callback
-                        ),
-                        ft.PopupMenuItem(
-                            text="Cambiar Contraseña",
-                            on_click=lambda _: controller.show_change_password()
-                            if controller
-                            else None,  # Usamos el callback
-                        ),
-                        ft.PopupMenuItem(
-                            content=ft.Row(
-                                controls=[
-                                    ft.Icon(
-                                        ft.icons.POWER_SETTINGS_NEW,
-                                        color=ft.Colors.BLUE_GREY_50,
-                                    ),  # Icono de salir
-                                    ft.Text(
-                                        "Salir", color=ft.Colors.BLUE_GREY_50, size=14
-                                    ),  # Texto de salir
-                                ],
-                                spacing=10,  # Espacio entre el icono y el texto
-                            ),
-                            on_click=lambda _: controller.show_login()
-                            if controller
-                            else None,
-                        ),
-                    ],
-                ),
-                # Área de arrastre con el título centrado
+                menu_button,
                 ft.WindowDragArea(
                     ft.Container(
                         content=ft.Text(
-                            "",
+                            "Proxy App",
                             text_align=ft.TextAlign.CENTER,
                             weight=ft.FontWeight.BOLD,
                             color=ft.Colors.WHITE,
@@ -63,7 +85,6 @@ def create_titlebar(
                     ),
                     expand=True,
                 ),
-                # Botones minimizar y cerrar
                 ft.Row(
                     [
                         ft.IconButton(
@@ -88,5 +109,8 @@ def create_titlebar(
         padding=0,
         margin=0,
     )
-
+    
+    # Añadir método para cambiar de vista
+    titlebar.set_view = set_current_view
+    
     return titlebar

@@ -32,7 +32,7 @@ class MessageManager:
             # creme el de proxy deteniedose
             "proxy_stopped": {
                 "text": "Proxy detenido correctamente!",
-                "icon": ft.Icons.STOP_SHARP,
+                "icon": ft.Icons.STOP_CIRCLE_OUTLINED,
                 "bgcolor": ft.Colors.GREEN_600,
             },
         }
