@@ -19,8 +19,8 @@ def change_pass(user):
     response = requests.post(url, data=data)
     return response
 
-# Ejemplo de uso:
-usuario = User("carlosmvp", "Contreras28.**", "Contreras28.****", "Contreras28.****")
+# Ejemplo de uso
+
 respuesta = change_pass(usuario)
 
 print("Status Code:", respuesta.status_code)

@@ -33,7 +33,17 @@ class MessageManager:
             "proxy_stopped": {
                 "text": "Proxy detenido correctamente!",
                 "icon": ft.Icons.STOP_CIRCLE_OUTLINED,
+                "bgcolor": ft.Colors.RED_600,
+            },
+            "pass_cambiad": {
+                "text": "Contrasena cambiada con exito!",
+                "icon": ft.Icons.CHECK_CIRCLE,
                 "bgcolor": ft.Colors.GREEN_600,
+            },
+            "no_cambiada": {
+                "text": "Contrasena cambiada con exito!",
+                "icon": ft.Icons.CHECK_CIRCLE,
+                "bgcolor": ft.Colors.RED_500,
             },
         }
 
@@ -57,7 +67,7 @@ class MessageManager:
         self.page.update()
 
         async def hide_message():
-            await asyncio.sleep(5)
+            await asyncio.sleep(3)
             self.container.opacity = 0.0
             self.page.update()
 

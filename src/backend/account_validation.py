@@ -1,12 +1,16 @@
+from backend.get_cuota import obtener_cuota
 
 
-
-def validate_account(username: str, password: str) -> bool:
-    if not username or not password:
-        return False
-    if len(password) < 8:
-        return False
-    return True
+def validate_account(username: str, password: str) ->int:
+    response= obtener_cuota(username , password)
+    if  response.status_code ==200:
+        return 1
+    elif response.status_code ==500:
+        return 2
+    
+    else :
+        return 3
+    
 
 def validate_red():
     return True

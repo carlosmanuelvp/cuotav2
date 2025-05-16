@@ -26,6 +26,7 @@ def create_titlebar(page: ft.Page, controller=None):
     
     # Función para cerrar sesión
     def logout_user():
+        app_data.is_connected=False
         app_data.is_login = False
         if controller:
             controller.show_login()

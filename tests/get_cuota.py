@@ -8,7 +8,7 @@ request_body = '''
     <soap-env:Body>
         <ns0:ObtenerCuota xmlns:ns0="urn:InetCuotasWS">
             <usuario>carlosmvp</usuario>
-            <clave>Contreras28.00</clave>
+            <clave>Contreras28d.00</clave>
             <dominio>uci.cu</dominio>
         </ns0:ObtenerCuota>
     </soap-env:Body>

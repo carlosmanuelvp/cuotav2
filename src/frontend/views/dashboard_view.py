@@ -3,8 +3,8 @@ from frontend.componets.container import CustomContainer
 from .base_view import View
 from frontend.componets.message_manager import MessageManager
 from backend.state import app_data , user_data
-from backend.account_validation import validate_account, validate_red
-
+#from backend.account_validation import validate_account, validate_red
+from backend.get_cuota_for_data import obtener_cuota_data
 import asyncio
 import psutil
 
@@ -19,7 +19,7 @@ class DashboardView(View):
 
     def _init_ui_components(self):
         self.message = " d"
-        self.stats_icon = ft.Icon(name=ft.Icons.CIRCLE, color=None, size=20)
+        self.stats_icon = ft.Icon(name=ft.Icons.CIRCLE, color=ft.Colors.RED_50, size=20)
         self.message_error_dashboard = CustomContainer(
             content=ft.Row(controls=[]),  # Aquí un contenedor vacío con controls
             bgcolor=ft.Colors.RED_300,
@@ -35,10 +35,11 @@ class DashboardView(View):
             width=200,
             height=200,
             stroke_width=10,
-            value=0.9867,
+            value=0.0,
         )
+        
         self.progress_text = ft.Text(
-            "0/0", size=40, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_500
+            "0/0", size=30, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_500
         )
 
         self.nenwork_speed = ft.Text(
@@ -49,7 +50,7 @@ class DashboardView(View):
         )
         self.play_button = ft.IconButton(
             icon=ft.Icons.PLAY_CIRCLE_FILLED,
-            icon_color=ft.Colors.BLUE_500,
+            icon_color=ft.Colors.INDIGO_500,
             icon_size=50,
             tooltip="Iniciar monitoreo",
             on_click=self._toggle_play_state,
@@ -81,7 +82,7 @@ class DashboardView(View):
         return CustomContainer(
             content=self.stats_icon,
             padding=0,
-            bgcolor=ft.Colors.RED_300,
+            
             margin=0,
         )
 
@@ -132,27 +133,41 @@ class DashboardView(View):
                 self.nenwork_speed.value = f"{speed_kb:.0f} KB/s"
             self.nenwork_speed.update()
 
+    async def actualizar_cuota(self):
+        while app_data.is_connected:
+            resultado = await asyncio.to_thread(obtener_cuota_data, user_data.username, user_data.password)
+            if resultado["status_code"] == 200:
+                total = resultado["cuota_total"]
+                usada = resultado["cuota_usada"]
+                porcentaje = min(usada / total, 1.0)
+
+                self.progress_ring.value = porcentaje
+                self.progress_text.value = f"{usada:.1f}/{total}"
+                self.page.update()
+            await asyncio.sleep(5)
+
     async def _toggle_play_state(self, e):
-        if validate_red():
-            if validate_account(user_data.username, user_data.password):    
-                if not app_data.is_connected:
+           
+        if not app_data.is_connected:
+                    self.stats_icon.color=ft.Colors.GREEN_500
                     app_data.is_connected = True
                     self.play_button.icon = ft.Icons.STOP_CIRCLE
-                    self.play_button.tooltip = "Detener monitoreo"
+                    self.play_button.tooltip = "Detener  conexion porxy"
                     self.play_button.icon_color = ft.Colors.RED_500
                     self.message_manager.show_message("proxy_success")
-                else:
+                    
+                    # Iniciar actualización de cuota
+                    asyncio.create_task(self.actualizar_cuota())
+
+        else:
+                    self.stats_icon.color=ft.Colors.RED_500
                     app_data.is_connected = False
                     self.play_button.icon = ft.Icons.PLAY_CIRCLE_FILLED
-                    self.play_button.tooltip = "Iniciar monitoreo"
-                    self.play_button.icon_color = ft.Colors.BLUE_500
+                    self.play_button.tooltip = "Iniciar conexion proxy"
+                    self.play_button.icon_color = ft.Colors.INDIGO_500
                     self.message_manager.show_message("proxy_stopped")
                 
-            else:
-                app_data.is_login = False
-                self.controller.show_login()
-        else:
-            self.message_manager.show_message("network_error")
         
+       
             
         self.page.update()

@@ -8,9 +8,13 @@ from .base_view import View
 import asyncio
 from frontend.componets.message_manager import MessageManager
 #validaciones
+from backend.get_cuota import obtener_cuota
 from backend.account_validation import  validate_account , validate_red
 from backend.state import app_data 
+from backend.state import user_data
+
 class LoginView(View):
+ 
 
     
     def __init__(self, page: ft.Page,controller):
@@ -54,11 +58,12 @@ class LoginView(View):
         )
 
         self.save_checkbox = CustomCheckbox(label="Mantener sesión iniciada")
+        self.login_button_text= ft.Text("Iniciar Sesión", size=16, weight=ft.FontWeight.BOLD)
         self.login_button = CustomElevatedButton(
             content=ft.Row(
                 [
                     ft.Icon(ft.Icons.LOGIN),
-                    ft.Text("Iniciar Sesión", size=16, weight=ft.FontWeight.BOLD),
+                    self.login_button_text
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 spacing=10,
@@ -75,7 +80,7 @@ class LoginView(View):
             width=170,
             height=40,
             on_click=self._on_login_click,
-            disabled=True,
+            disabled=True,  
         )
 
     def build_ui(self):
@@ -118,15 +123,31 @@ class LoginView(View):
         return CustomContainer(content=self.login_button, alignment=ft.alignment.center)
 
     async def _on_login_click(self, e):
-        if validate_red():
-            if validate_account(self.username_field.value, self.password_field.value):
-                app_data.is_login=True
-                self.controller.show_dashboard()
-            else:
-                self.message_manager.show_message("login_error")
-                
+        self.login_button.disabled = True
+        self.login_button_text.value = "Autenticando"
+        self.page.update()
+
+        await asyncio.sleep(0.1)  # asegura que la UI se actualice
+
+        # Ejecutar la solicitud SOAP en un hilo para no bloquear la UI
+        status_code = await asyncio.to_thread(obtener_cuota, self.username_field.value, self.password_field.value)
+
+        if status_code == 200:
+            
+            app_data.is_login = True
+            user_data.username= self.username_field.value
+            user_data.password= self.password_field.value
+            self.controller.show_dashboard()
+        elif status_code == 500:
+            self.message_manager.show_message("login_error")
         else:
             self.message_manager.show_message("network_error")
+
+        self.login_button.disabled = False
+        self.login_button_text.value = "Iniciar Sesión"
+        self.page.update()
+
+
          
     def _validate_fields(self, e):
         username = self.username_field.value.strip()
