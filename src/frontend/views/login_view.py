@@ -10,14 +10,12 @@ from frontend.componets.message_manager import MessageManager
 
 
 class LoginView(View):
-
-    
-    def __init__(self, page: ft.Page,controller):
+    def __init__(self, page: ft.Page, controller):
         self.page = page
         self.controller = controller
         self._init_ui_components()
-        self.message_manager = MessageManager(self.message_error, self.page) 
-    
+        self.message_manager = MessageManager(self.message_error, self.page)
+
     def _init_ui_components(self):
         self.message_error = CustomContainer(
             content=ft.Row(controls=[]),  # Aquí un contenedor vacío con controls
@@ -64,11 +62,9 @@ class LoginView(View):
             ),
             style=ft.ButtonStyle(
                 shape=ft.RoundedRectangleBorder(radius=10),
-                color=ft.Colors.WHITE   ,
+                color=ft.Colors.WHITE,
                 overlay_color=ft.Colors.BLUE_400,
                 shadow_color=ft.Colors.BLUE_500,
-                
-                
                 bgcolor=ft.Colors.BLUE_500,
             ),
             width=170,
@@ -118,8 +114,8 @@ class LoginView(View):
 
     async def _on_login_click(self, e):
         self.controller.show_dashboard()
-        #self.message_manager.show_message("login_error")
-        
+        # self.message_manager.show_message("login_error")
+
     def _validate_fields(self, e):
         username = self.username_field.value.strip()
         password = self.password_field.value.strip()

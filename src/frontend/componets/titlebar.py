@@ -22,16 +22,23 @@ def create_titlebar(
                             else None,  # Añadido el callback
                         ),
                         ft.PopupMenuItem(
-                            text="SRNI",
-                            # on_click=lambda _: ,  # Usamos el callback
+                            text="Cambiar Contraseña",
+                            on_click=lambda _: controller.show_change_password()
+                            if controller
+                            else None,  # Usamos el callback
                         ),
                         ft.PopupMenuItem(
                             content=ft.Row(
                                 controls=[
-                                    ft.Icon(ft.icons.POWER_SETTINGS_NEW, color=ft.Colors.BLUE_GREY_50), # Icono de salir
-                                    ft.Text("Salir", color=ft.Colors.BLUE_GREY_50, size=14), # Texto de salir
+                                    ft.Icon(
+                                        ft.icons.POWER_SETTINGS_NEW,
+                                        color=ft.Colors.BLUE_GREY_50,
+                                    ),  # Icono de salir
+                                    ft.Text(
+                                        "Salir", color=ft.Colors.BLUE_GREY_50, size=14
+                                    ),  # Texto de salir
                                 ],
-                                spacing=10 # Espacio entre el icono y el texto
+                                spacing=10,  # Espacio entre el icono y el texto
                             ),
                             on_click=lambda _: controller.show_login()
                             if controller

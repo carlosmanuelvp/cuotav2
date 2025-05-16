@@ -29,3 +29,15 @@ class DataSchema:
     app_status: AppStatus = field(default_factory=AppStatus)
     user: User = field(default_factory=User)
     config_cntm: ConfigCntm = field(default_factory=ConfigCntm)
+
+@dataclass
+class Cuota:
+    total: Optional[float] = None
+    used: Optional[float] = None
+    remaining: Optional[float] = None
+    active_time: Optional[str] = None
+    
+@dataclass
+class configuracion_aviso_cuota:
+    por_minuto=  Optional[float] = None
+    porcito= Optional[float] = None

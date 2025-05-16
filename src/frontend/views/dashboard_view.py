@@ -6,16 +6,18 @@ from backend.models import AppStatus
 import psutil
 import asyncio
 
+
 class DashboardView(View):
     def __init__(self, page: ft.Page):
         self.page = page
-        
+
         self._init_ui_components()
         self.message_manager = MessageManager(self.message_error_dashboard, self.page)
         asyncio.create_task(self.monitor_network_speed())  # <-- Añade esta línea
+
     def _init_ui_components(self):
         self.message = " d"
-        self.stats_icon=ft.Icon(name=ft.Icons.CIRCLE, color=None, size=20)
+        self.stats_icon = ft.Icon(name=ft.Icons.CIRCLE, color=None, size=20)
         self.message_error_dashboard = CustomContainer(
             content=ft.Row(controls=[]),  # Aquí un contenedor vacío con controls
             bgcolor=ft.Colors.RED_300,
@@ -31,10 +33,10 @@ class DashboardView(View):
             width=200,
             height=200,
             stroke_width=10,
-            value=0.6,
+            value=0.9867,
         )
         self.progress_text = ft.Text(
-            "600/100", size=40, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_500
+            "0/0", size=40, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_500
         )
 
         self.nenwork_speed = ft.Text(
@@ -63,25 +65,24 @@ class DashboardView(View):
                     controls=[self._build_icon_connect()],
                     alignment=ft.MainAxisAlignment.END,  # Esto lo alinea a la derecha
                 ),
-               self.message_error_dashboard,
+                self.message_error_dashboard,
                 self._build_progress_section(),
                 self._build_speed_section(),
                 self.play_button,
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=10,
-            
         )
         return content
-    def _build_icon_connect(self):  
+
+    def _build_icon_connect(self):
         return CustomContainer(
             content=self.stats_icon,
             padding=0,
             bgcolor=ft.Colors.RED_300,
             margin=0,
         )
-        
-    
+
     def _build_progress_section(self):
         return CustomContainer(
             content=ft.Stack(
@@ -113,13 +114,14 @@ class DashboardView(View):
             padding=6,
             alignment=ft.alignment.center,
         )
+
     async def monitor_network_speed(self):
         old_bytes = psutil.net_io_counters().bytes_recv
         while True:
             await asyncio.sleep(1)
             new_bytes = psutil.net_io_counters().bytes_recv
             speed_mb = (new_bytes - old_bytes) / (1024 * 1024)  # MB/s
-            speed_kb = (new_bytes - old_bytes) / 1024           # KB/s
+            speed_kb = (new_bytes - old_bytes) / 1024  # KB/s
             old_bytes = new_bytes
 
             if speed_mb >= 1:
@@ -127,7 +129,6 @@ class DashboardView(View):
             else:
                 self.nenwork_speed.value = f"{speed_kb:.0f} KB/s"
             self.nenwork_speed.update()
+
     async def _toggle_play_state(self, e):
         self.message_manager.show_message("proxy_stopped")
-
-        

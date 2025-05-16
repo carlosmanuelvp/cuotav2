@@ -13,13 +13,13 @@ class frontendController:
         self.page.padding = 0
         self.page.window.width = 330
         self.page.window.height = 595
-        
+
         self.title_bar_buttons_hidden = True
         self.title_bar_hidden = True
         self.page.window.title_bar_hidden = True
         self.page.window.title_bar_buttons_hidden = True
         self.page.window.frameless = False
-        self.page.bgcolor = ft.Colors.RED_50
+        self.page.bgcolor = ft.Colors.BLUE_GREY_50
 
         self._build_ui()
 
@@ -28,7 +28,7 @@ class frontendController:
         self.login_view = LoginView(self.page, self)
         self.dashboard_view = DashboardView(self.page)
         self.settings_view = SettingsView(self.page)
-        self.change_password= ChangePasswordView(self.page)
+        self.change_password = ChangePasswordView(self.page, self)
         # Contenedores de vistas
         self.login_container = CustomControllerBasePage(
             self.login_view.build_ui(), visible=False, padding=0, margin=0
@@ -39,7 +39,7 @@ class frontendController:
         self.dashboard_container = CustomControllerBasePage(
             self.dashboard_view.build_ui(), visible=False, padding=0
         )
-        self.change_password_container= CustomControllerBasePage(
+        self.change_password_container = CustomControllerBasePage(
             content=self.change_password.build_ui(), visible=True, padding=0, margin=0
         )
         # Apilar vistas
@@ -48,16 +48,14 @@ class frontendController:
                 self.login_container,
                 self.dashboard_container,
                 self.settings_container,
-                self.change_password_container
+                self.change_password_container,
             ],
-        
         )
 
         # Añadir barra de título y stack a la página
         self.page.add(
             create_titlebar(self.page, self),
             self.stack,
-            
         )
 
     def show_dashboard(self):
@@ -75,7 +73,13 @@ class frontendController:
         self.settings_container.visible = True
         self.page.update()
 
+    def show_change_password(self):
+        self._hide_all()
+        self.change_password_container.visible = True
+        self.page.update()
+
     def _hide_all(self):
+        self.change_password_container.visible = False
         self.login_container.visible = False
         self.dashboard_container.visible = False
         self.settings_container.visible = False

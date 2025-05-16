@@ -29,7 +29,7 @@ class MessageManager:
                 "icon": ft.Icons.CHECK_CIRCLE,
                 "bgcolor": ft.Colors.GREEN_600,
             },
-            #creme el de proxy deteniedose
+            # creme el de proxy deteniedose
             "proxy_stopped": {
                 "text": "Proxy detenido correctamente!",
                 "icon": ft.Icons.STOP_SHARP,
