@@ -41,7 +41,7 @@ class MessageManager:
                 "bgcolor": ft.Colors.GREEN_600,
             },
             "no_cambiada": {
-                "text": "Contrasena cambiada con exito!",
+                "text": "No se cambio la contrasena",
                 "icon": ft.Icons.CHECK_CIRCLE,
                 "bgcolor": ft.Colors.RED_500,
             },

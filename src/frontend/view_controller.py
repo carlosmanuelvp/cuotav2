@@ -7,6 +7,7 @@ from frontend.componets.titlebar import create_titlebar
 from frontend.componets.container_page import CustomControllerBasePage
 from backend.state import app_data
 
+
 class frontendController:
     def __init__(self, page: ft.Page):
         self.page = page
@@ -68,7 +69,7 @@ class frontendController:
                             ]
                         ),
                         expand=True,
-                    )
+                    ),
                 ],
                 spacing=0,
                 expand=True,

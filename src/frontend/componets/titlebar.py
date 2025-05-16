@@ -1,36 +1,39 @@
 import flet as ft
 from backend.state import app_data
 
+
 def create_titlebar(page: ft.Page, controller=None):
     """
-    Crea una barra de título personalizada con un menú que se muestra 
+    Crea una barra de título personalizada con un menú que se muestra
     en todas las vistas excepto la de login.
     """
     # Vista actual (por defecto, login)
     current_view = "login"
-    
+
     # Función para cambiar la vista actual
     def set_current_view(view_name):
         nonlocal current_view
         current_view = view_name
         update_titlebar()
         page.update()
-    
+
     # Función para actualizar la barra de título
     def update_titlebar():
         # Mostrar menú si no es login Y el usuario está logueado
-        show_menu = current_view != "login" and app_data.is_login and controller is not None
-        
+        show_menu = (
+            current_view != "login" and app_data.is_login and controller is not None
+        )
+
         # Actualizar visibilidad del menú
         menu_button.visible = show_menu
-    
+
     # Función para cerrar sesión
     def logout_user():
-        app_data.is_connected=False
+        app_data.is_connected = False
         app_data.is_login = False
         if controller:
             controller.show_login()
-    
+
     # Crear botón de menú (inicialmente puede estar oculto)
     menu_button = ft.PopupMenuButton(
         icon=ft.Icons.MENU,
@@ -41,22 +44,34 @@ def create_titlebar(page: ft.Page, controller=None):
         visible=False,  # Inicialmente oculto
         items=[
             ft.PopupMenuItem(
-                content=ft.Text("Dashboard", color=ft.Colors.WHITE), # Cambiado a ft.Text con color
+                content=ft.Text(
+                    "Dashboard", color=ft.Colors.WHITE
+                ),  # Cambiado a ft.Text con color
                 on_click=lambda _: controller.show_dashboard() if controller else None,
             ),
             ft.PopupMenuItem(
-                content=ft.Text("Ajustes", color=ft.Colors.WHITE), # Cambiado a ft.Text con color
+                content=ft.Text(
+                    "Ajustes", color=ft.Colors.WHITE
+                ),  # Cambiado a ft.Text con color
                 on_click=lambda _: controller.show_settings() if controller else None,
             ),
             ft.PopupMenuItem(
-                content=ft.Text("Cambiar Contraseña", color=ft.Colors.WHITE), # Cambiado a ft.Text con color
-                on_click=lambda _: controller.show_change_password() if controller else None,
+                content=ft.Text(
+                    "Cambiar Contraseña", color=ft.Colors.WHITE
+                ),  # Cambiado a ft.Text con color
+                on_click=lambda _: controller.show_change_password()
+                if controller
+                else None,
             ),
             ft.PopupMenuItem(
                 content=ft.Row(
                     controls=[
-                        ft.Icon(ft.icons.POWER_SETTINGS_NEW, color=ft.Colors.WHITE), # Cambiado a WHITE
-                        ft.Text("Cerrar Sesión", color=ft.Colors.WHITE, size=14), # Cambiado a WHITE
+                        ft.Icon(
+                            ft.icons.POWER_SETTINGS_NEW, color=ft.Colors.WHITE
+                        ),  # Cambiado a WHITE
+                        ft.Text(
+                            "Cerrar Sesión", color=ft.Colors.WHITE, size=14
+                        ),  # Cambiado a WHITE
                     ],
                     spacing=10,
                 ),
@@ -64,7 +79,7 @@ def create_titlebar(page: ft.Page, controller=None):
             ),
         ],
     )
-    
+
     # Crear la barra de título
     titlebar = ft.Container(
         content=ft.Row(
@@ -110,8 +125,8 @@ def create_titlebar(page: ft.Page, controller=None):
         padding=0,
         margin=0,
     )
-    
+
     # Añadir método para cambiar de vista
     titlebar.set_view = set_current_view
-    
+
     return titlebar

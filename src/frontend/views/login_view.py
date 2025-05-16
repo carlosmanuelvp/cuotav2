@@ -7,22 +7,21 @@ from frontend.componets.container_page import CustomControllerBasePage
 from .base_view import View
 import asyncio
 from frontend.componets.message_manager import MessageManager
-#validaciones
+
+# validaciones
 from backend.get_cuota import obtener_cuota
-from backend.account_validation import  validate_account , validate_red
-from backend.state import app_data 
+from backend.account_validation import validate_account, validate_red
+from backend.state import app_data
 from backend.state import user_data
 
-class LoginView(View):
- 
 
-    
-    def __init__(self, page: ft.Page,controller):
+class LoginView(View):
+    def __init__(self, page: ft.Page, controller):
         self.page = page
         self.controller = controller
         self._init_ui_components()
-        self.message_manager = MessageManager(self.message_error, self.page) 
-    
+        self.message_manager = MessageManager(self.message_error, self.page)
+
     def _init_ui_components(self):
         self.message_error = CustomContainer(
             content=ft.Row(controls=[]),  # Aquí un contenedor vacío con controls
@@ -58,29 +57,26 @@ class LoginView(View):
         )
 
         self.save_checkbox = CustomCheckbox(label="Mantener sesión iniciada")
-        self.login_button_text= ft.Text("Iniciar Sesión", size=16, weight=ft.FontWeight.BOLD)
+        self.login_button_text = ft.Text(
+            "Iniciar Sesión", size=16, weight=ft.FontWeight.BOLD
+        )
         self.login_button = CustomElevatedButton(
             content=ft.Row(
-                [
-                    ft.Icon(ft.Icons.LOGIN),
-                    self.login_button_text
-                ],
+                [ft.Icon(ft.Icons.LOGIN), self.login_button_text],
                 alignment=ft.MainAxisAlignment.CENTER,
                 spacing=10,
             ),
             style=ft.ButtonStyle(
                 shape=ft.RoundedRectangleBorder(radius=10),
-                color=ft.Colors.INDIGO_500,   
+                color=ft.Colors.INDIGO_500,
                 overlay_color=ft.Colors.BLUE_400,
                 shadow_color=ft.Colors.BLUE_500,
-                
-                
                 bgcolor=ft.Colors.INDIGO_500,
             ),
             width=170,
             height=40,
             on_click=self._on_login_click,
-            disabled=True,  
+            disabled=True,
         )
 
     def build_ui(self):
@@ -130,13 +126,14 @@ class LoginView(View):
         await asyncio.sleep(0.1)  # asegura que la UI se actualice
 
         # Ejecutar la solicitud SOAP en un hilo para no bloquear la UI
-        status_code = await asyncio.to_thread(obtener_cuota, self.username_field.value, self.password_field.value)
+        status_code = await asyncio.to_thread(
+            obtener_cuota, self.username_field.value, self.password_field.value
+        )
 
         if status_code == 200:
-            
             app_data.is_login = True
-            user_data.username= self.username_field.value
-            user_data.password= self.password_field.value
+            user_data.username = self.username_field.value
+            user_data.password = self.password_field.value
             self.controller.show_dashboard()
         elif status_code == 500:
             self.message_manager.show_message("login_error")
@@ -147,13 +144,10 @@ class LoginView(View):
         self.login_button_text.value = "Iniciar Sesión"
         self.page.update()
 
-
-         
     def _validate_fields(self, e):
         username = self.username_field.value.strip()
         password = self.password_field.value.strip()
-        
-        
+
         # Habilita el botón solo si ambos campos tienen texto
         self.login_button.disabled = not (username and password)
         self.page.update()

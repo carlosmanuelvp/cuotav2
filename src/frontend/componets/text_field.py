@@ -34,7 +34,7 @@ class CustomTextField(ft.TextField):
         self.on_blur = self._on_blur_handler
         self._user_on_blur = on_blur
         self._validation_func = validation_func
-        self.expand= expand
+        self.expand = expand
         # variables
         self.text_size = text_size
         self.multiline = multiline

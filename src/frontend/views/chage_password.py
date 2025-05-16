@@ -2,6 +2,8 @@ import flet as ft
 from frontend.componets.container import CustomContainer
 from frontend.componets.text_field import CustomTextField
 from frontend.componets.elebate_button import CustomElevatedButton
+from backend.cambiar_pass import change_pass
+from backend.state import user_data
 
 from .base_view import View
 import asyncio
@@ -207,8 +209,23 @@ class ChangePasswordView(View):
         # Añadir un margen superior para separar del resto de los campos
 
     async def _on_login_click(self, e):
-        self.controller.show_dashboard()
-        # self.message_manager.show_message("login_error")
+        self.login_button.disabled = True
+        self.page.update()
+
+        await asyncio.sleep(0.1)
+
+        status_code = await asyncio.to_thread(lambda: change_pass(
+        user_data.username,
+        self.current_password.value,
+        self.password_field.value,
+        self.confirm_password_field.value,
+    ))
+        if status_code == 200:
+            self.message_manager.show_message("pass_cambiad")
+        if status_code == 401:
+            self.message_manager.show_message("no_cambiada")
+        self.login_button.disabled = False
+        self.page.update()
 
     def _validate_fields_current_password(self, e):
         current_password_ = self.current_password.value.strip()

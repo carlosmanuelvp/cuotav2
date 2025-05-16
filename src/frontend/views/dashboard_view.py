@@ -2,8 +2,9 @@ import flet as ft
 from frontend.componets.container import CustomContainer
 from .base_view import View
 from frontend.componets.message_manager import MessageManager
-from backend.state import app_data , user_data
-#from backend.account_validation import validate_account, validate_red
+from backend.state import app_data, user_data
+
+# from backend.account_validation import validate_account, validate_red
 from backend.get_cuota_for_data import obtener_cuota_data
 import asyncio
 import psutil
@@ -37,7 +38,7 @@ class DashboardView(View):
             stroke_width=10,
             value=0.0,
         )
-        
+
         self.progress_text = ft.Text(
             "0/0", size=30, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_500
         )
@@ -82,7 +83,6 @@ class DashboardView(View):
         return CustomContainer(
             content=self.stats_icon,
             padding=0,
-            
             margin=0,
         )
 
@@ -135,7 +135,9 @@ class DashboardView(View):
 
     async def actualizar_cuota(self):
         while app_data.is_connected:
-            resultado = await asyncio.to_thread(obtener_cuota_data, user_data.username, user_data.password)
+            resultado = await asyncio.to_thread(
+                obtener_cuota_data, user_data.username, user_data.password
+            )
             if resultado["status_code"] == 200:
                 total = resultado["cuota_total"]
                 usada = resultado["cuota_usada"]
@@ -147,27 +149,23 @@ class DashboardView(View):
             await asyncio.sleep(5)
 
     async def _toggle_play_state(self, e):
-           
         if not app_data.is_connected:
-                    self.stats_icon.color=ft.Colors.GREEN_500
-                    app_data.is_connected = True
-                    self.play_button.icon = ft.Icons.STOP_CIRCLE
-                    self.play_button.tooltip = "Detener  conexion porxy"
-                    self.play_button.icon_color = ft.Colors.RED_500
-                    self.message_manager.show_message("proxy_success")
-                    
-                    # Iniciar actualización de cuota
-                    asyncio.create_task(self.actualizar_cuota())
+            self.stats_icon.color = ft.Colors.GREEN_500
+            app_data.is_connected = True
+            self.play_button.icon = ft.Icons.STOP_CIRCLE
+            self.play_button.tooltip = "Detener  conexion porxy"
+            self.play_button.icon_color = ft.Colors.RED_500
+            self.message_manager.show_message("proxy_success")
+
+            # Iniciar actualización de cuota
+            asyncio.create_task(self.actualizar_cuota())
 
         else:
-                    self.stats_icon.color=ft.Colors.RED_500
-                    app_data.is_connected = False
-                    self.play_button.icon = ft.Icons.PLAY_CIRCLE_FILLED
-                    self.play_button.tooltip = "Iniciar conexion proxy"
-                    self.play_button.icon_color = ft.Colors.INDIGO_500
-                    self.message_manager.show_message("proxy_stopped")
-                
-        
-       
-            
+            self.stats_icon.color = ft.Colors.RED_500
+            app_data.is_connected = False
+            self.play_button.icon = ft.Icons.PLAY_CIRCLE_FILLED
+            self.play_button.tooltip = "Iniciar conexion proxy"
+            self.play_button.icon_color = ft.Colors.INDIGO_500
+            self.message_manager.show_message("proxy_stopped")
+
         self.page.update()
