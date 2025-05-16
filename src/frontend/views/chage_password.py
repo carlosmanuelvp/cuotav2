@@ -55,7 +55,7 @@ class ChangePasswordView(View):
         )
         # creae un variebla para mayor de 8 caracterees
         self.mayor_eight_digitos = ft.Text(
-            " mas de 8 de caracteres", color=ft.Colors.RED_ACCENT_700, size=14
+            "más de 8 de caracteres", color=ft.Colors.RED_ACCENT_700, size=14
         )
         self.icon_eight_digitos = ft.Icon(
             ft.Icons.CHECK_CIRCLE, color=ft.Colors.RED_ACCENT_700, size=14
@@ -97,7 +97,7 @@ class ChangePasswordView(View):
             content=ft.Row(
                 [
                     ft.Icon(ft.Icons.LOGIN),
-                    ft.Text("Iniciar Sesión", size=16, weight=ft.FontWeight.BOLD),
+                    ft.Text("Cambiar", size=16, weight=ft.FontWeight.BOLD),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 spacing=10,

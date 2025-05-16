@@ -9,8 +9,10 @@ authors = [
 ]
 dependencies = [
   "flet==0.27.6",
+  "pillow>=11.2.1",
   "psutil>=7.0.0",
   "pydantic>=2.11.3",
+  "pystray>=0.19.5",
 ]
 
 [tool.flet]

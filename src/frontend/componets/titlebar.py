@@ -40,22 +40,22 @@ def create_titlebar(page: ft.Page, controller=None):
         visible=False,  # Inicialmente oculto
         items=[
             ft.PopupMenuItem(
-                text="Dashboard",
+                content=ft.Text("Dashboard", color=ft.Colors.WHITE), # Cambiado a ft.Text con color
                 on_click=lambda _: controller.show_dashboard() if controller else None,
             ),
             ft.PopupMenuItem(
-                text="Ajustes",
+                content=ft.Text("Ajustes", color=ft.Colors.WHITE), # Cambiado a ft.Text con color
                 on_click=lambda _: controller.show_settings() if controller else None,
             ),
             ft.PopupMenuItem(
-                text="Cambiar Contraseña",
+                content=ft.Text("Cambiar Contraseña", color=ft.Colors.WHITE), # Cambiado a ft.Text con color
                 on_click=lambda _: controller.show_change_password() if controller else None,
             ),
             ft.PopupMenuItem(
                 content=ft.Row(
                     controls=[
-                        ft.Icon(ft.icons.POWER_SETTINGS_NEW, color=ft.Colors.BLUE_GREY_50),
-                        ft.Text("Cerrar Sesión", color=ft.Colors.BLUE_GREY_50, size=14),
+                        ft.Icon(ft.icons.POWER_SETTINGS_NEW, color=ft.Colors.WHITE), # Cambiado a WHITE
+                        ft.Text("Cerrar Sesión", color=ft.Colors.WHITE, size=14), # Cambiado a WHITE
                     ],
                     spacing=10,
                 ),

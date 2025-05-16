@@ -86,7 +86,7 @@ class frontendController:
         app_data.is_login = False
         self._hide_all()
         self.login_container.visible = True
-        
+
         self.page.update()
 
     def show_settings(self):

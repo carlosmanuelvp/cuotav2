@@ -25,13 +25,16 @@ class CustomTextField(ft.TextField):
         error_text=None,
         text_size=None,
         on_change=None,
+        value=None,
+        expand=None,
+        max_length=None,
     ):
         super().__init__()
         # eventos
         self.on_blur = self._on_blur_handler
         self._user_on_blur = on_blur
         self._validation_func = validation_func
-
+        self.expand= expand
         # variables
         self.text_size = text_size
         self.multiline = multiline
@@ -60,6 +63,8 @@ class CustomTextField(ft.TextField):
         self.text_size = 14
         self.can_reveal_password = can_reveal_password
         self.on_change = on_change
+        self.value = value
+        self.max_length = max_length
 
     def _on_blur_handler(self, e):
         if self._validation_func:

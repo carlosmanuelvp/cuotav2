@@ -53,7 +53,7 @@ class LoginView(View):
             disabled=False,
         )
 
-        self.save_checkbox = CustomCheckbox(label="Mantener Sesion Iniciada")
+        self.save_checkbox = CustomCheckbox(label="Mantener sesión iniciada")
         self.login_button = CustomElevatedButton(
             content=ft.Row(
                 [
@@ -65,12 +65,12 @@ class LoginView(View):
             ),
             style=ft.ButtonStyle(
                 shape=ft.RoundedRectangleBorder(radius=10),
-                color=ft.Colors.WHITE   ,
+                color=ft.Colors.INDIGO_500,   
                 overlay_color=ft.Colors.BLUE_400,
                 shadow_color=ft.Colors.BLUE_500,
                 
                 
-                bgcolor=ft.Colors.BLUE_500,
+                bgcolor=ft.Colors.INDIGO_500,
             ),
             width=170,
             height=40,

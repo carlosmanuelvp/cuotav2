@@ -20,7 +20,8 @@ class ConfigCntm(User):
     proxy_server: Optional[str] = "10.0.0.1"
     proxy_port: Optional[int] = 8080
     no_proxy: List[str] = field(default_factory=lambda: ["*uci.cu", "127.00.1"])
-    listen_port: Optional[int] = 345435
+    listen_port: Optional[int] = 3128
+    listen_server: Optional[str] = "127.0.0.1"
     gateway: Optional[bool] = False
 
 
@@ -39,5 +40,5 @@ class Cuota:
     
 @dataclass
 class configuracion_aviso_cuota:
-    por_minuto: Optional[float] = None
-    por_ciento: Optional[float] = None
+    por_minuto: Optional[int] = None
+    por_ciento: Optional[int] = None
