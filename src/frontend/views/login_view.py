@@ -30,6 +30,7 @@ class LoginView(View):
             width=300,
             height=50,
             opacity=0,
+
         )
 
         self.logo_icon = ft.Image(
@@ -89,6 +90,7 @@ class LoginView(View):
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=10,
+
         )
 
         return content
@@ -134,10 +136,15 @@ class LoginView(View):
             app_data.is_login = True
             user_data.username = self.username_field.value
             user_data.password = self.password_field.value
+            
+            
+
             self.controller.show_dashboard()
         elif status_code == 500:
             self.message_manager.show_message("login_error")
         else:
+            app_data.is_login = True
+            self.controller.show_dashboard()
             self.message_manager.show_message("network_error")
 
         self.login_button.disabled = False

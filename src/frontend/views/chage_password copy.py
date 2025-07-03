@@ -1,3 +1,4 @@
+from sys import version_info
 import flet as ft
 from frontend.componets.container import CustomContainer
 from frontend.componets.text_field import CustomTextField
@@ -129,6 +130,7 @@ class ChangePasswordView(View):
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=10,
+
         )
 
         return content

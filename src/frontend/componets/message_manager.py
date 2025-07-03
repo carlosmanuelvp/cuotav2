@@ -36,12 +36,12 @@ class MessageManager:
                 "bgcolor": ft.Colors.RED_600,
             },
             "pass_cambiad": {
-                "text": "Contrasena cambiada con exito!",
+                "text": "Contraseña cambiada con exito!",
                 "icon": ft.Icons.CHECK_CIRCLE,
                 "bgcolor": ft.Colors.GREEN_600,
             },
             "no_cambiada": {
-                "text": "No se cambio la contrasena",
+                "text": "No se cambio la contraseña",
                 "icon": ft.Icons.CHECK_CIRCLE,
                 "bgcolor": ft.Colors.RED_500,
             },
@@ -67,7 +67,7 @@ class MessageManager:
         self.page.update()
 
         async def hide_message():
-            await asyncio.sleep(3)
+            await asyncio.sleep(10)
             self.container.opacity = 0.0
             self.page.update()
 

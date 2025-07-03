@@ -12,6 +12,9 @@ class AppStatus:
 class User:
     username: Optional[str] = "carlosmvp"
     password: Optional[str] = "sadfasdhfuyagsd~s"
+    cuota_total: Optional[float] = 0
+    cuota_usada: Optional[float] = 0
+    cuota_porcentaje: Optional[float] = 0
 
 
 @dataclass
@@ -41,6 +44,6 @@ class Cuota:
 
 
 @dataclass
-class configuracion_aviso_cuota:
-    por_minuto: Optional[int] = None
-    por_ciento: Optional[int] = None
+class ConfiguracionAvisoCuota:
+    intervalo_notificacion_minutos: Optional[int] = None  # Notifica cada X minutos
+    umbral_notificacion_porcentaje: Optional[int] = None  # Notifica al llegar a X%

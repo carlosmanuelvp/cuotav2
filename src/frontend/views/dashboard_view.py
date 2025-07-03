@@ -36,7 +36,7 @@ class DashboardView(View):
             width=200,
             height=200,
             stroke_width=10,
-            value=0.0,
+            value=0.85,
         )
 
         self.progress_text = ft.Text(
@@ -44,7 +44,7 @@ class DashboardView(View):
         )
 
         self.nenwork_speed = ft.Text(
-            "144, MB/s",
+            "0 MB/s",
             size=20,
             weight=ft.FontWeight.BOLD,
             color=ft.Colors.BLACK45,
@@ -153,7 +153,7 @@ class DashboardView(View):
             self.stats_icon.color = ft.Colors.GREEN_500
             app_data.is_connected = True
             self.play_button.icon = ft.Icons.STOP_CIRCLE
-            self.play_button.tooltip = "Detener  conexion porxy"
+            self.play_button.tooltip = "Detener  conexion proxy"
             self.play_button.icon_color = ft.Colors.RED_500
             self.message_manager.show_message("proxy_success")
 

@@ -88,7 +88,7 @@ def create_titlebar(page: ft.Page, controller=None):
                 ft.WindowDragArea(
                     ft.Container(
                         content=ft.Text(
-                            "Proxy App",
+                            "CuotaNova",
                             text_align=ft.TextAlign.CENTER,
                             weight=ft.FontWeight.BOLD,
                             color=ft.Colors.WHITE,
