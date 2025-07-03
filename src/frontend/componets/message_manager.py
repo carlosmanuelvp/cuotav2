@@ -67,7 +67,7 @@ class MessageManager:
         self.page.update()
 
         async def hide_message():
-            await asyncio.sleep(10)
+            await asyncio.sleep(3)
             self.container.opacity = 0.0
             self.page.update()
 

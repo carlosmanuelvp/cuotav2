@@ -44,7 +44,7 @@ class DashboardView(View):
         )
 
         self.nenwork_speed = ft.Text(
-            "0 MB/s",
+            "0 ",
             size=20,
             weight=ft.FontWeight.BOLD,
             color=ft.Colors.BLACK45,
@@ -153,7 +153,7 @@ class DashboardView(View):
             self.stats_icon.color = ft.Colors.GREEN_500
             app_data.is_connected = True
             self.play_button.icon = ft.Icons.STOP_CIRCLE
-            self.play_button.tooltip = "Detener  conexion proxy"
+            self.play_button.tooltip = "Detener conexión de CuotaNova"
             self.play_button.icon_color = ft.Colors.RED_500
             self.message_manager.show_message("proxy_success")
 
@@ -164,8 +164,21 @@ class DashboardView(View):
             self.stats_icon.color = ft.Colors.RED_500
             app_data.is_connected = False
             self.play_button.icon = ft.Icons.PLAY_CIRCLE_FILLED
-            self.play_button.tooltip = "Iniciar conexion proxy"
+            self.play_button.tooltip = "Iniciar conexión de CuotaNova"
             self.play_button.icon_color = ft.Colors.INDIGO_500
             self.message_manager.show_message("proxy_stopped")
 
+        self.page.update()
+
+    def reset_dashboard(self):
+        # Reiniciar valores visuales y de estado
+        self.progress_ring.value = 0
+        self.progress_text.value = "0/0"
+        self.nenwork_speed.value = "0 "
+        self.stats_icon.color = ft.Colors.RED_50
+        self.play_button.icon = ft.Icons.PLAY_CIRCLE_FILLED
+        self.play_button.tooltip = "Iniciar monitoreo"
+        self.play_button.icon_color = ft.Colors.INDIGO_500
+        self._is_playing = False
+        self.network_connecte = False
         self.page.update()

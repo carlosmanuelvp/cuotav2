@@ -4,6 +4,7 @@ from frontend.componets.text_field import CustomTextField
 from frontend.componets.elebate_button import CustomElevatedButton
 from backend.cambiar_pass import change_pass
 from backend.state import user_data
+from backend.account_validation import validate_red
 
 from .base_view import View
 import asyncio
@@ -28,9 +29,8 @@ class ChangePasswordView(View):
         )
 
         self.current_password = CustomTextField(
-            label="Contrasena Actual",
-            hint_text="Escribe la contrasena actual",
-            # prefix_icon=ft.Icons.PERSON,
+            label="Contraseña actual",
+            hint_text="Escribe la contraseña actual",
             on_change=self._validate_fields_current_password,
             disabled=False,
             error_text=None,
@@ -38,28 +38,24 @@ class ChangePasswordView(View):
             password=True,
         )
         self.password_field = CustomTextField(
-            label="Contraseña",
+            label="Nueva contraseña",
             password=True,
-            hint_text="escribe la contrasena",
-            # prefix_icon=ft.Icons.LOCK,
+            hint_text="Escribe la nueva contraseña",
             can_reveal_password=True,
             on_change=self._validate_fields,
-            # on_blur=self._on_password_blur,
             disabled=False,
         )
         self.confirm_password_field = CustomTextField(
-            label="Confirmar Contraseña",
+            label="Confirmar contraseña",
             password=True,
-            hint_text="escribe la contrasena",
-            # prefix_icon=ft.Icons.LOCK,
+            hint_text="Vuelve a escribir la nueva contraseña",
             can_reveal_password=True,
             on_change=self._validate_fields,
-            # on_blur=self._on_password_blur,
             disabled=False,
         )
         # creae un variebla para mayor de 8 caracterees
         self.mayor_eight_digitos = ft.Text(
-            "más de 8 de caracteres", color=ft.Colors.RED_ACCENT_700, size=18
+            "Mínimo 8 caracteres", color=ft.Colors.RED_ACCENT_700, size=18
         )
         self.icon_eight_digitos = ft.Icon(
             ft.Icons.CHECK_CIRCLE, color=ft.Colors.RED_ACCENT_700, size=18
@@ -91,7 +87,7 @@ class ChangePasswordView(View):
 
         # Validación de al menos 1 caracter especial
         self.caracter_especial_text = ft.Text(
-            "Al menos 1 caracter especial", color=ft.Colors.RED_ACCENT_700, size=18
+            "Al menos 1 carácter especial", color=ft.Colors.RED_ACCENT_700, size=18
         )
         self.icon_caracter_especial = ft.Icon(
             ft.Icons.CHECK_CIRCLE, color=ft.Colors.RED_ACCENT_700, size=18
@@ -101,7 +97,7 @@ class ChangePasswordView(View):
             content=ft.Row(
                 [
                     ft.Icon(ft.Icons.LOGIN),
-                    ft.Text("Cambiar", size=16, weight=ft.FontWeight.BOLD),
+                    ft.Text("Cambiar contraseña", size=16, weight=ft.FontWeight.BOLD),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 spacing=10,
@@ -217,17 +213,33 @@ class ChangePasswordView(View):
 
         await asyncio.sleep(0.1)
 
-        status_code = await asyncio.to_thread(lambda: change_pass(
-        user_data.username,
-        self.current_password.value,
-        self.password_field.value,
-        self.confirm_password_field.value,
-    ))
+        # Validar red antes de intentar cambiar la contraseña
+        if not validate_red():
+            self.message_manager.show_message("network_error")
+            self.login_button.disabled = False
+            self.page.update()
+            return
 
+        # Comprobar que la contraseña actual coincide con la guardada en memoria
+        if (self.current_password.value or "") != (user_data.password or ""):
+            self.message_manager.show_message("no_cambiada")
+            self.login_button.disabled = False
+            self.page.update()
+            return
 
-        if status_code == 200:
-            self.message_manager.show_message("pass_cambiad")
-        if status_code == 401:
+        try:
+            status_code = await asyncio.to_thread(lambda: change_pass(
+                user_data.username,
+                self.current_password.value,
+                self.password_field.value,
+                self.confirm_password_field.value,
+            ))
+
+            if status_code == 200:
+                self.message_manager.show_message("pass_cambiad")
+            else:
+                self.message_manager.show_message("no_cambiada")
+        except Exception:
             self.message_manager.show_message("no_cambiada")
         self.login_button.disabled = False
         self.page.update()

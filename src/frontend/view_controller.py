@@ -76,6 +76,16 @@ class frontendController:
             )
         )
 
+        # Comprobar sesión guardada y mostrar dashboard si corresponde
+        from frontend.views.login_view import cargar_sesion
+        from backend.state import user_data, app_data
+        username, password, mantener_sesion = cargar_sesion()
+        if mantener_sesion and username and password:
+            user_data.username = username
+            user_data.password = password
+            app_data.is_login = True
+            self.show_dashboard()
+
     def show_dashboard(self):
         self.titlebar.set_view("dashboard")
         self._hide_all()
@@ -88,6 +98,13 @@ class frontendController:
         self._hide_all()
         self.login_container.visible = True
 
+        # Limpiar los campos de usuario y contraseña
+        self.login_view.username_field.value = ""
+        self.login_view.password_field.value = ""
+
+        # Reiniciar dashboard visualmente y estado de conexión
+        self.dashboard_view.reset_dashboard()
+        app_data.is_connected = False
         self.page.update()
 
     def show_settings(self):

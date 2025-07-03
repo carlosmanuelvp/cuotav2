@@ -1,5 +1,5 @@
 import flet as ft
-from backend.state import app_data
+from backend.state import app_data, user_data
 
 
 def create_titlebar(page: ft.Page, controller=None):
@@ -31,6 +31,11 @@ def create_titlebar(page: ft.Page, controller=None):
     def logout_user():
         app_data.is_connected = False
         app_data.is_login = False
+        user_data.username = ""
+        user_data.password = ""
+        user_data.cuota_total = 0
+        user_data.cuota_usada = 0
+        user_data.cuota_porcentaje = 0
         if controller:
             controller.show_login()
 

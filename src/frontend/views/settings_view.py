@@ -7,6 +7,7 @@ from .base_view import View
 from backend.state import proxy_conf
 import asyncio
 from backend.state import cuota_aviso
+from plyer import notification
 
 
 class SettingsView(View):
@@ -42,9 +43,9 @@ class SettingsView(View):
     def _init_ui_components(self):
         # Servidor remoto
         self.remote_server_field = CustomTextField(
-            label="Servidor Remoto",
+            label="Servidor remoto",
             value=proxy_conf.proxy_server,
-            hint_text="Dirección del servidor ",
+            hint_text="Dirección del servidor remoto",
             disabled=True,
             validation_func=self._validate_server,
             width=200,
@@ -52,9 +53,9 @@ class SettingsView(View):
 
         # Puerto del servidor remoto
         self.remote_port_field = CustomTextField(
-            label="Puerto Remoto",
+            label="Puerto remoto",
             value=proxy_conf.proxy_port,
-            hint_text="Puerto Remoto",
+            hint_text="Puerto remoto",
             text_size=4,
             disabled=True,
             validation_func=self._validate_port,
@@ -63,7 +64,7 @@ class SettingsView(View):
 
         # Servidor local
         self.local_server_field = CustomTextField(
-            label="Servidor Local",
+            label="Servidor local",
             value=proxy_conf.listen_server,
             hint_text="Dirección del servidor local",
             disabled=False,
@@ -73,9 +74,9 @@ class SettingsView(View):
 
         # Puerto del servidor local
         self.local_port_field = CustomTextField(
-            label="Puerto Local",
+            label="Puerto local",
             value=proxy_conf.listen_port,
-            hint_text="Puerto del servidor local",
+            hint_text="Puerto local",
             disabled=False,
             validation_func=self._validate_port,
             width=100,
@@ -83,7 +84,7 @@ class SettingsView(View):
 
         # Dominio Proxy
         self.proxy_domain_field = CustomTextField(
-            label="Dominio Proxy",
+            label="Dominio del proxy",
             value=proxy_conf.domain,
             hint_text="Dominio del servidor proxy",
             disabled=True,
@@ -104,18 +105,19 @@ class SettingsView(View):
             width=310,
             value=proxy_conf.no_proxy,
         )
-        self.avisar_minutos = CustomTextField(
-            label="Avisar cada",
-            hint_text="minutos",
+        self.notify_percent_field = CustomTextField(
+            label="Notificar cuando el uso alcance (%)",
+            hint_text="Ejemplo: 80",
             width=310,
-            max_length=2,
-            validation_func=lambda v: v.isdigit() and int(v) > 0,
+            max_length=6,
+            validation_func=lambda v: v.replace('.', '', 1).isdigit() and 0 < float(v) <= 100 if v else False,
         )
-        self.porciento = CustomTextField(
-            label="Notificar cuando llegue",
-            hint_text="Porcentaje",
-            max_length=2,
+        self.notify_megabytes_field = CustomTextField(
+            label="Notificar cuando queden (MB)",
+            hint_text="Ejemplo: 200",
             width=310,
+            max_length=10,
+            validation_func=lambda v: v.replace('.', '', 1).isdigit() and float(v) > 0 if v else False,
         )
         self.button = CustomElevatedButton(
             content=ft.Text("Guardar"),
@@ -129,7 +131,7 @@ class SettingsView(View):
     def build_ui(self):
         content = ft.Column(
             controls=[
-                ft.Text("Configuración del Proxy", size=20, weight=ft.FontWeight.BOLD),
+                ft.Text("Configuración del proxy", size=20, weight=ft.FontWeight.BOLD),
                 self._servior_remoto_section(),
                 self._servior_local_section(),
                 self.proxy_domain_field,
@@ -170,8 +172,8 @@ class SettingsView(View):
             content=ft.Column(
                 controls=[
                     ft.Text("Notificaciones", size=20, weight=ft.FontWeight.BOLD),
-                    self.avisar_minutos,
-                    self.porciento,
+                    self.notify_percent_field,
+                    self.notify_megabytes_field,
                 ],
             ),
             margin=ft.margin.only(
@@ -183,8 +185,17 @@ class SettingsView(View):
         return self.button
 
     async def _on_save_click(self, e):
-        cuota_aviso.por_minuto = self.avisar_minutos.value
-        cuota_aviso.por_ciento = self.porciento.value
+        # Validar y guardar los valores
+        if self.notify_percent_field.value and not self.notify_percent_field.validation_func(self.notify_percent_field.value):
+            self.notify_percent_field.error_text = "Debe ser un número entre 0 y 100"
+            self.notify_percent_field.update()
+            return
+        if self.notify_megabytes_field.value and not self.notify_megabytes_field.validation_func(self.notify_megabytes_field.value):
+            self.notify_megabytes_field.error_text = "Debe ser un número mayor que 0"
+            self.notify_megabytes_field.update()
+            return
+        cuota_aviso.umbral_notificacion_porcentaje = float(self.notify_percent_field.value) if self.notify_percent_field.value else None
+        cuota_aviso.umbral_notificacion_megas = float(self.notify_megabytes_field.value) if self.notify_megabytes_field.value else None
 
         self.button.disabled = True
         self.button.content = ft.Row(
@@ -197,17 +208,34 @@ class SettingsView(View):
         )
         self.button.bgcolor = ft.colors.GREEN_700  # Cambiar color para feedback
         self.button.update()
-        # self.page.update() # Opcional, button.update() podría ser suficiente
 
-        # 4. Esperar 3 segundos
-        await asyncio.sleep(3)
-        self.button.content = ft.Row(
-            [ft.Icon(color=ft.colors.WHITE), ft.Text("Guardar", color=ft.colors.WHITE)],
-            alignment=ft.MainAxisAlignment.CENTER,
-            spacing=5,
-        )
-        self.button.bgcolor = ft.colors.INDIGO_500
-        self.button.disabled = False
-        # 5. Restaurar contenido original del botón y habilitarlo
+        # Lanzar o detener tarea de monitoreo según configuración
+        if cuota_aviso.umbral_notificacion_porcentaje or cuota_aviso.umbral_notificacion_megas:
+            if not hasattr(self, '_notifier_task'):
+                self._notifier_task = asyncio.create_task(self._notificar_cuota())
+        else:
+            if hasattr(self, '_notifier_task'):
+                self._notifier_task.cancel()
+                del self._notifier_task
 
-        self.button.update()
+    async def _notificar_cuota(self):
+        while True:
+            await asyncio.sleep(15)
+            # Obtener el porcentaje de uso actual y megas restantes
+            if user_data.cuota_total and user_data.cuota_usada:
+                porcentaje_usado = (user_data.cuota_usada / user_data.cuota_total) * 100
+                megas_restantes = user_data.cuota_total - user_data.cuota_usada
+                if cuota_aviso.umbral_notificacion_porcentaje and porcentaje_usado >= cuota_aviso.umbral_notificacion_porcentaje:
+                    notification.notify(
+                        title="Aviso de cuota",
+                        message=f"Has alcanzado el {porcentaje_usado:.2f}% de tu cuota.",
+                        timeout=5
+                    )
+                    break  # Solo notificar una vez por configuración
+                if cuota_aviso.umbral_notificacion_megas and megas_restantes <= cuota_aviso.umbral_notificacion_megas:
+                    notification.notify(
+                        title="Aviso de cuota",
+                        message=f"Te quedan {megas_restantes:.2f} MB de tu cuota.",
+                        timeout=5
+                    )
+                    break  # Solo notificar una vez por configuración
